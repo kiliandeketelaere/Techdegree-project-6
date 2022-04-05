@@ -14,11 +14,11 @@ let list = document.querySelector("#phrase ul");
 // declarations of Array
 //
 let phrases = [
-  "A pair of pajamas",
-  "Six little ducks",
-  "Spaghetti marinara",
-  "My dad is stronger",
-  "A dime a dozen",
+  "a pair of pajamas",
+  "six little ducks",
+  "spaghetti marinara",
+  "my dad is stronger",
+  "a dime a dozen",
 ];
 
 //
@@ -46,6 +46,7 @@ const getRandomPhraseAsArray = (phrases) => {
 // 
 // Add li item to display letter 
 //
+
 const addPhraseToDisplay = (phrase, ul) => {
   for (const char of phrase) {
     let li = document.createElement("li");
@@ -65,6 +66,7 @@ addPhraseToDisplay(phraseArray);
 //
 // Search for the matching letters 
 //
+
 const checkLetter = (button) => {
   const storeAllLI = document.querySelectorAll("#phrase ul li");
   let match = null;
@@ -82,6 +84,7 @@ const checkLetter = (button) => {
 // 
 // Count the wins and losses
 //
+
 qwerty.addEventListener("click", (event) => {
   if (event.target.tagName == "BUTTON") {
     event.target.className = "chosen";
@@ -104,6 +107,7 @@ qwerty.addEventListener("click", (event) => {
 // 
 // Check the win/loss counter
 // 
+
 function checkWin() {
   let letter = document.querySelectorAll(".letter");
   let show = document.querySelectorAll(".show");
@@ -115,8 +119,8 @@ function checkWin() {
   }
   if (missed === 5) {
     overlay.className = "lose";
-    title.textContent = "You lose!";
-    startButton.textContent = "Try again?";
+    title.textContent = "You Lose!";
+    startButton.textContent = "Play another game?";
     overlay.style.display = "flex";
   }
 }
@@ -124,6 +128,7 @@ function checkWin() {
 // 
 // rest function
 //
+
 function resetPhrase(arr) {
   phrase.removeChild(phrase.firstElementChild);
   let ul = document.createElement("ul");
@@ -133,8 +138,9 @@ function resetPhrase(arr) {
 }
 
 //
-// reset scoreboard
+// reset scoreboard and keyboard
 //
+
 function resetScoreboard() {
   for (let i = 0; i < 5; i++) {
     scoreboard.removeChild(scoreboard.firstElementChild);
@@ -147,9 +153,7 @@ function resetScoreboard() {
   }
 }
 
-//
-// reset the keyboard
-// 
+
 function resetQWERTY() {
   let qwerty = document.querySelectorAll("#qwerty button");
   for (let i = 0; i < qwerty.length; i++) {
@@ -161,6 +165,7 @@ function resetQWERTY() {
 //
 // clear the game
 // 
+
 function clearGame(arr) {
   let phrases = getRandomPhraseAsArray(arr);
   resetPhrase(phrases);
