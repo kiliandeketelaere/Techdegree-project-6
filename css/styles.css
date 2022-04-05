@@ -1,19 +1,26 @@
 /* Main styles */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&Roboto:300');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700&Roboto:300");
 
 /* Variables */
 
 :root {
-  --color-win: #78CF82;
-  --color-lose: #D94545;
+  --color-win: #22eb3a;
+  --color-win-a: darkgreen;
+  --color-lose: #b40909;
+  --color-lose-a: #b40909;
   --color-start: #5b85b7;
-  --color-neutral: #445069;
-  --color-neutral-light: #D2D2D2;
-  --color-keys: #37474F;
-  --color-keys-light: #E5E5E5;
+  --color-neutral: #707682;
+  --color-neutral-light: #d2d2d2;
+  --color-keys: #707682;
+  --color-keys-light: #e5e5e5;
   --font-size-large: 60px;
   --font-size-medium: 20px;
-  --transition: all .2s ease-in-out;
+  --transition: all 0.2s ease-in-out;
+}
+.imgTries {
+  height: 35px;
+  width: 30px;
+  margin-right: 5px;
 }
 
 /* main */
@@ -29,7 +36,9 @@ body {
   height: 100vh;
 }
 
-li, ol, ul {
+li,
+ol,
+ul {
   padding: 0;
   display: inline-block;
 }
@@ -37,7 +46,7 @@ li, ol, ul {
 h2 {
   margin: 0;
   text-transform: uppercase;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: var(--font-size-large);
   margin: 0;
 }
@@ -45,7 +54,7 @@ h2 {
 button {
   margin: 6px;
   border: 1px solid transparent;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   color: var(--color-keys);
   font-size: var(--font-size-medium);
   background-color: var(--color-keys-light);
@@ -53,6 +62,13 @@ button {
   -webkit-transition: var(--transition);
   -o-transition: var(--transition);
   transition: var(--transition);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+button:hover {
+  transform: scale(1.15);
+  background-color: #b5dbef;
 }
 
 .main-container {
@@ -82,10 +98,14 @@ button {
   height: 65px;
   width: 65px;
   padding: 20px 1px 0 1px;
-  margin-right: 2px;
+  margin-right: 5px;
   color: transparent;
   background: var(--color-neutral-light);
   border-radius: 5px;
+  transition: transform 0.2s, background 0.2s;
+}
+.letter:hover {
+  transform: scale(1.15);
 }
 
 .space {
@@ -94,7 +114,7 @@ button {
 
 .show {
   color: #000;
-  background-color: #76CE82;
+  background-color: #76ce82;
 }
 
 /* Keyboard */
@@ -108,13 +128,13 @@ button {
   background: var(--color-neutral);
   border-radius: 5px;
   font-size: var(--font-size-medium);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .btn__reset {
   padding: 8px;
   margin: 50px auto;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 5px;
   font-size: var(--font-size-medium);
 }
@@ -125,7 +145,7 @@ button {
   display: flex;
   flex-direction: column;
   position: fixed;
-  color: #FFFFFF;
+  color: #ffffff;
   justify-content: center;
   top: 0;
   bottom: 0;
@@ -135,7 +155,7 @@ button {
 }
 
 .title {
-  color: #FFF;
+  color: #fff;
 }
 
 .start {
@@ -148,6 +168,7 @@ button {
 
 .win {
   background-color: var(--color-win);
+  display: flex;
 }
 
 .win a {

@@ -1,168 +1,171 @@
-// Global variables
-const overlay = document.getElementById("overlay");
-const overlayTitle = overlay.querySelector(".title");
-const overlayButton = overlay.querySelector(".btn__reset");
-const qwerty = document.getElementById("qwerty");
-const phrase = document.getElementById("phrase");
-const scoreboard = document.getElementById("scoreboard");
-const hearts = scoreboard.querySelectorAll(".tries");
-const phrases = ["A pair of pajamas", "Six little ducks", "Spaghetti marinara", "My dad is stronger", "A dime a dozen"];
-let currentPhraseNumber = "";
+//
+// global variables
+//
+let qwerty = document.getElementById("qwerty");
+let phrase = document.getElementById("phrase");
 let missed = 0;
+let scoreboard = document.querySelector("#scoreboard ol");
+let overlay = document.getElementById("overlay");
+let title = document.querySelector("#overlay .title");
+let startButton = document.querySelector(".btn__reset");
+let list = document.querySelector("#phrase ul");
 
-//Functions
-function getRandomNumber(maxValue) {
-    const number = Math.floor(Math.random() * maxValue) + 1;
-    return number;
+//
+// declarations of Array
+//
+let phrases = [
+  "A pair of pajamas",
+  "Six little ducks",
+  "Spaghetti marinara",
+  "My dad is stronger",
+  "A dime a dozen",
+];
+
+//
+// Hide overlay and reset the game
+//
+startButton.addEventListener("click", start);
+
+function start(e) {
+  overlay.style.display = "none";
+  resetGame();
 }
 
-function splitPhrase(phrase) {
-    const phraseLetters = phrase.split('');
-    return phraseLetters;
+function resetGame(e) {
+  clearGame(phrases);
 }
 
-function getRandomPhraseAsArray(arr) {
-    const arrayMaxIndex = arr.length - 1;
-    let phraseNumber = getRandomNumber(arrayMaxIndex);
-    if ( phraseNumber === currentPhraseNumber ) {
-        if ( currentPhraseNumber < arrayMaxIndex ) {
-            phraseNumber++;
-        } else {
-            phraseNumber = 0;
-        }
+//
+// Random phrase function
+//
+const getRandomPhraseAsArray = (phrases) => {
+  let randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+  return Array.from(randomPhrase);
+};
+
+// 
+// Add li item to display letter 
+//
+const addPhraseToDisplay = (phrase, ul) => {
+  for (const char of phrase) {
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode(char));
+    ul === undefined ? list.appendChild(li) : ul.appendChild(li);
+    if (char >= "a" && char <= "z") {
+      li.classList.add("letter");
+    } else {
+      li.classList.add("space");
     }
-    currentPhraseNumber = phraseNumber;
-    const phrase = phrases[phraseNumber];
-    const arrayOfLetters = splitPhrase(phrase);
-    return arrayOfLetters;
-}
+  }
+};
 
-function addPhraseToDisplay(arr) {
-    const ul = phrase.querySelector('ul');
-    arr.forEach( char => {
-        const li = document.createElement('li');
-        li.textContent = char.toUpperCase();
-        if ( li.textContent === " " ) {
-            li.className = "space";
-        } else {
-            li.className = "letter";    
-        }
-        ul.appendChild(li);
-    });
-}
+const phraseArray = getRandomPhraseAsArray(phrases);
+addPhraseToDisplay(phraseArray);
 
-function checkQwertyLetter(clickedButton) {
-    const letters = phrase.querySelectorAll(".letter");
-    let letterReturn = null;
-    letters.forEach( letter => {
-        let letterText = letter.textContent.toLowerCase();
-        if ( letterText === clickedButton ) {
-            letter.classList.add("show");
-            letterReturn = letterText;
-        }
-    });
-    return letterReturn;
-}
+//
+// Search for the matching letters 
+//
+const checkLetter = (button) => {
+  const storeAllLI = document.querySelectorAll("#phrase ul li");
+  let match = null;
+  for (let i = 0; i < storeAllLI.length; i++) {
+    const li = storeAllLI[i];
+    if (button.innerText === li.innerText) {
+      li.classList.add("show");
+      li.style.transition = "all 0.7s ease";
+      match = button.innerText;
+    }
+  }
+  return match;
+};
 
-function chooseQwertyLetter(qwertyLetter) {
-    qwertyLetter.classList.add("chosen");
-    qwertyLetter.disabled = true;
-    return qwertyLetter.textContent;
-}
+// 
+// Count the wins and losses
+//
+qwerty.addEventListener("click", (event) => {
+  if (event.target.tagName == "BUTTON") {
+    event.target.className = "chosen";
+    let letterFound = checkLetter(event.target);
+    if (letterFound === null) {
+      missed++;
+      event.target.disabled = true;
+      scoreboard.removeChild(scoreboard.firstElementChild);
+      let lostHeartLi = document.createElement("li");
+      let lostHeartImg = document.createElement("img");
+      lostHeartImg.src = "images/lostHeart.png ";
+      lostHeartImg.className = "imgTries";
+      lostHeartLi.appendChild(lostHeartImg);
+      scoreboard.appendChild(lostHeartLi);
+    }
+  }
+  checkWin();
+});
 
-// :'(
-function subtractHeart() {
-    const numberOfHearts = hearts.length;
-    let hiddenHeartCounter = 0;
-    hearts.forEach( heart => {
-        if ( heart.style.visibility === "hidden" ) {
-            hiddenHeartCounter++;
-        }
-    });
-    const numberOfVisibleHearts = numberOfHearts - hiddenHeartCounter;
-    const lastVisibleHeartIndex = numberOfVisibleHearts - 1;
-    hearts[lastVisibleHeartIndex].style.visibility = "hidden";
-}
-
-function showOverlay(className, msg) {
-    overlay.className = className;
-    overlayTitle.textContent = msg;
-    overlayButton.textContent = "Reset game";
-    setTimeout(() => {
-        overlay.style.display = 'flex';
-    }, 400);
-}
-
+// 
+// Check the win/loss counter
+// 
 function checkWin() {
-    const lettersInPhrase = phrase.querySelectorAll(".letter").length;
-    const revealedLetters = phrase.querySelectorAll(".show").length;  
-    if ( lettersInPhrase === revealedLetters ) {
-        showOverlay("win", "Congratulations! You win.");
-    } else if ( missed >= 5 ) {
-        showOverlay("lose", "Sorry, you lost. Better luck next time!")
-    }
+  let letter = document.querySelectorAll(".letter");
+  let show = document.querySelectorAll(".show");
+  if (letter.length == show.length) {
+    overlay.className = "win";
+    title.textContent = "Congrats You Win!";
+    startButton.textContent = "Play another game?";
+    overlay.style.display = "flex";
+  }
+  if (missed === 5) {
+    overlay.className = "lose";
+    title.textContent = "You lose!";
+    startButton.textContent = "Try again?";
+    overlay.style.display = "flex";
+  }
 }
 
-function resetGame() {
-    clearPhrase();
-    resetQwerty();
-    replenishHearts();
-    missed = 0;
-    runGame();
+// 
+// rest function
+//
+function resetPhrase(arr) {
+  phrase.removeChild(phrase.firstElementChild);
+  let ul = document.createElement("ul");
+  ul.classList.add("reset_list");
+  phrase.appendChild(ul);
+  addPhraseToDisplay(arr, ul);
 }
 
-function clearPhrase() {
-    const ul = phrase.querySelector("ul");
-    const letters = phrase.querySelectorAll("li");
-    letters.forEach(letter => {
-        ul.removeChild(letter);
-    });
+//
+// reset scoreboard
+//
+function resetScoreboard() {
+  for (let i = 0; i < 5; i++) {
+    scoreboard.removeChild(scoreboard.firstElementChild);
+    let liveHeartLi = document.createElement("li");
+    let liveHeartImg = document.createElement("img");
+    liveHeartImg.src = "images/liveHeart.png";
+    liveHeartImg.className = "imgTries";
+    scoreboard.appendChild(liveHeartLi);
+    liveHeartLi.appendChild(liveHeartImg);
+  }
 }
 
-function resetQwerty() {
-    const buttons = qwerty.querySelectorAll("button");
-    buttons.forEach( button => {
-        button.className = "";
-        button.disabled = false;
-    });
+//
+// reset the keyboard
+// 
+function resetQWERTY() {
+  let qwerty = document.querySelectorAll("#qwerty button");
+  for (let i = 0; i < qwerty.length; i++) {
+    qwerty[i].disabled = false;
+    qwerty[i].classList.remove("chosen");
+  }
 }
 
-function replenishHearts() {
-    hearts.forEach( heart => {
-        heart.style.visibility = 'visible';
-    });
+//
+// clear the game
+// 
+function clearGame(arr) {
+  let phrases = getRandomPhraseAsArray(arr);
+  resetPhrase(phrases);
+  resetScoreboard();
+  resetQWERTY();
+  missed = 0;
+  overlay.style.display = "none";
 }
-
-function runGame() {
-    const newPhrase = getRandomPhraseAsArray(phrases);
-    addPhraseToDisplay(newPhrase);
-}
-
-// Event listeners
-overlay.addEventListener( "click", (e) => {
-    const target = e.target;
-    if  ( target.tagName === "A" ) {
-        buttonText = target.textContent.toLowerCase();
-        if ( buttonText === "start game") {
-            runGame();
-        }
-        if ( buttonText === "reset game") {
-            resetGame();
-        }
-        overlay.style.display = "none"
-    }
-});
-
-qwerty.addEventListener("click", (e) => {
-    const target = e.target;
-    if ( target.tagName === "BUTTON" ) {
-        let buttonText = chooseQwertyLetter(target);
-        let buttonMatch = checkQwertyLetter(buttonText);
-        if ( buttonMatch === null ) {
-            subtractHeart();
-            missed++;
-        }
-        checkWin();
-    }
-});
-
